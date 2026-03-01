@@ -43,14 +43,14 @@ const navigation = {
   categories: [
     {
       name: 'Ready To Wear',
-      featured: [
-        {
-          name: 'All Collections',
-          href: '#',
-          imageSrc: '/images/fyu.png',
-          imageAlt:
-            'Models sitting back to back, wearing Basic Tee in black and bone.',
-        },
+      page: {
+        name: 'All Collections',
+        href: '#',
+        imageSrc: '/images/fyu.png',
+        imageAlt:
+          'Models sitting back to back, wearing Basic Tee in black and bone.',
+      },
+      collections: [
         {
           name: 'Mini Bridal Collection',
           href: '#',
@@ -67,41 +67,18 @@ const navigation = {
         },
       ],
     },
-    // {
-    //   name: 'Bridal Custom Making',
-    //   featured: [
-    //     {
-    //       name: 'Bridal',
-    //       href: '#',
-    //       imageSrc: '/images/_.jpeg',
-    //       imageAlt:
-    //         'Hats and sweaters on wood shelves next to various colors of t-shirts on hangers.',
-    //     },
-    //     {
-    //       name: 'Basic for Weddings',
-    //       href: '#',
-    //       imageSrc: '/images/_.png',
-    //       imageAlt: 'Model wearing light heather gray t-shirt.',
-    //     },
-    //     {
-    //       name: 'Casual with Family',
-    //       href: '#',
-    //       imageSrc: '/images/_(1).png',
-    //       imageAlt:
-    //         'Grey 6-panel baseball hat with black brim, black mountain graphic on front, and light heather gray body.',
-    //     },
-    //     {
-    //       name: 'Young and Sexy',
-    //       href: '#',
-    //       imageSrc: '/images/_(2).jpeg',
-    //       imageAlt:
-    //         'Model putting folded cash into slim card holder olive leather wallet with hand stitching.',
-    //     },
-    //   ],
-    // },
+    {
+      name: 'Bridal Custom Making',
+      page: {
+        name: 'Customized for You',
+        href: '#',
+        imageSrc: '/images/fyu.png',
+        imageAlt:
+          'Models sitting back to back, wearing Basic Tee in black and bone.',
+      },
+    },
   ],
   pages: [
-    { name: 'Bridal Custom Making', href: '#' },
     { name: 'Our Story', href: '#' },
     { name: 'Contact Us', href: '#' },
   ],
@@ -133,35 +110,7 @@ const categories = [
     imageSrc: '/images/18.png',
   },
 ];
-const collections = [
-  {
-    name: 'New Arrivals',
-    href: '#',
-    imageSrc: '/images/3.png',
-    imageAlt:
-      'Brown leather key ring with brass metal loops and rivets on wood table.',
-    description:
-      'Keep your phone, keys, and wallet together, so you can lose everything at once.',
-  },
-  {
-    name: 'Ramadan & Eid Selection',
-    href: '#',
-    imageSrc: '/images/36.png',
-    imageAlt:
-      'Brown leather key ring with brass metal loops and rivets on wood table.',
-    description:
-      'Keep your phone, keys, and wallet together, so you can lose everything at once.',
-  },
-  {
-    name: 'Spring 26',
-    href: '#',
-    imageSrc: '/images/26.jpeg',
-    imageAlt:
-      'Natural leather mouse pad on white desk next to porcelain mug and keyboard.',
-    description:
-      'The rest of the house will still be a mess, but your desk will look great.',
-  },
-];
+
 const footerNavigation = {
   shop: [
     { name: 'Bags', href: '#' },
@@ -323,22 +272,49 @@ export default function Example() {
                     className="space-y-12 px-4 py-6"
                   >
                     <div className="grid grid-cols-2 gap-x-4 gap-y-10">
-                      {category.featured.map((item) => (
-                        <div key={item.name} className="group relative">
+                      {category.collections &&
+                        category.collections.length > 0 &&
+                        category.collections.map((item) => (
+                          <div key={item.name} className="group relative">
+                            <img
+                              alt={item.imageAlt}
+                              src={item.imageSrc}
+                              className="aspect-square w-full rounded-md bg-gray-100 object-cover group-hover:opacity-75"
+                            />
+                            <a
+                              href={item.href}
+                              className="mt-6 block text-sm font-medium text-gray-900"
+                            >
+                              <span
+                                aria-hidden="true"
+                                className="absolute inset-0 z-10"
+                              />
+                              {item.name}
+                            </a>
+                            <p
+                              aria-hidden="true"
+                              className="mt-1 text-sm text-gray-500"
+                            >
+                              Shop now
+                            </p>
+                          </div>
+                        ))}
+                      {!category.collections && (
+                        <div key={category.name} className="group relative">
                           <img
-                            alt={item.imageAlt}
-                            src={item.imageSrc}
+                            alt={category.page.imageAlt}
+                            src={category.page.imageSrc}
                             className="aspect-square w-full rounded-md bg-gray-100 object-cover group-hover:opacity-75"
                           />
                           <a
-                            href={item.href}
+                            href={category.page.href}
                             className="mt-6 block text-sm font-medium text-gray-900"
                           >
                             <span
                               aria-hidden="true"
                               className="absolute inset-0 z-10"
                             />
-                            {item.name}
+                            {category.page.name}
                           </a>
                           <p
                             aria-hidden="true"
@@ -347,7 +323,7 @@ export default function Example() {
                             Shop now
                           </p>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </TabPanel>
                 ))}
@@ -494,88 +470,138 @@ export default function Example() {
                       {/* Flyout menus */}
                       <PopoverGroup className="inset-x-0 bottom-0 px-4">
                         <div className="flex h-full justify-center space-x-8">
-                          {navigation.categories.map((category) => (
-                            <Popover key={category.name} className="flex">
-                              {({ open }) => {
-                                // Sync state with Popover open/closed
-                                if (open && activeCategory !== category.name) {
-                                  setActiveCategory(category.name);
-                                } else if (
-                                  !open &&
-                                  activeCategory === category.name
-                                ) {
-                                  setActiveCategory(null);
-                                }
+                          {navigation.categories.map((category) => {
+                            if (
+                              category.collections &&
+                              category.collections.length > 0
+                            )
+                              return (
+                                <Popover key={category.name} className="flex">
+                                  {({ open }) => {
+                                    // Sync state with Popover open/closed
+                                    if (
+                                      open &&
+                                      activeCategory !== category.name
+                                    ) {
+                                      setActiveCategory(category.name);
+                                    } else if (
+                                      !open &&
+                                      activeCategory === category.name
+                                    ) {
+                                      setActiveCategory(null);
+                                    }
 
-                                return (
-                                  <>
-                                    <div className="relative flex">
-                                      <PopoverButton
-                                        className="group relative flex items-center justify-center text-sm font-medium transition-colors duration-200 ease-out cursor-pointer focus:outline-none focus:ring-0"
-                                        onClick={() =>
-                                          setActiveCategory(
-                                            activeCategory === category.name
-                                              ? null
-                                              : category.name,
-                                          )
-                                        }
-                                      >
-                                        {category.name}
-                                        <span
-                                          aria-hidden="true"
-                                          className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-white"
-                                        />
-                                      </PopoverButton>
-                                    </div>
-                                    <PopoverPanel
-                                      transition
-                                      className="absolute inset-x-0 top-full z-20 w-full bg-white text-sm text-gray-500 transition data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
-                                    >
-                                      {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
-                                      <div
-                                        aria-hidden="true"
-                                        className="absolute inset-0 top-1/2 bg-white shadow-sm"
-                                      />
-                                      <div className="relative bg-white">
-                                        <div className="mx-auto max-w-7xl px-8">
-                                          <div className="grid grid-cols-3 gap-x-8 gap-y-10 py-16">
-                                            {category.featured.map((item) => (
-                                              <div
-                                                key={item.name}
-                                                className="group relative"
-                                              >
-                                                <img
-                                                  alt={item.imageAlt}
-                                                  src={item.imageSrc}
-                                                  className="aspect-square w-full rounded-md bg-gray-100 object-cover group-hover:opacity-75"
-                                                />
-                                                <a
-                                                  href={item.href}
-                                                  className="mt-4 block font-medium text-gray-900"
-                                                >
-                                                  <span
-                                                    aria-hidden="true"
-                                                    className="absolute inset-0 z-10"
-                                                  />
-                                                  {item.name}
-                                                </a>
-                                                <p
-                                                  aria-hidden="true"
-                                                  className="mt-1"
-                                                >
-                                                  Shop now
-                                                </p>
-                                              </div>
-                                            ))}
-                                          </div>
+                                    return (
+                                      <>
+                                        <div className="relative flex">
+                                          <PopoverButton
+                                            className="group relative flex items-center justify-center text-sm font-medium transition-colors duration-200 ease-out cursor-pointer focus:outline-none focus:ring-0"
+                                            onClick={() =>
+                                              setActiveCategory(
+                                                activeCategory === category.name
+                                                  ? null
+                                                  : category.name,
+                                              )
+                                            }
+                                          >
+                                            {category.name}
+                                            <span
+                                              aria-hidden="true"
+                                              className="absolute inset-x-0 -bottom-px z-30 h-0.5 transition duration-200 ease-out group-data-open:bg-white"
+                                            />
+                                          </PopoverButton>
                                         </div>
-                                      </div>
-                                    </PopoverPanel>
-                                  </>
-                                );
-                              }}
-                            </Popover>
-                          ))}
+                                        <PopoverPanel
+                                          transition
+                                          className="absolute inset-x-0 top-full z-20 w-full bg-white text-sm text-gray-500 transition data-closed:opacity-0 data-enter:duration-200 data-enter:ease-out data-leave:duration-150 data-leave:ease-in"
+                                        >
+                                          {/* Presentational element used to render the bottom shadow, if we put the shadow on the actual panel it pokes out the top, so we use this shorter element to hide the top of the shadow */}
+                                          <div
+                                            aria-hidden="true"
+                                            className="absolute inset-0 top-1/2 bg-white shadow-sm"
+                                          />
+                                          <div className="relative bg-white">
+                                            <div className="mx-auto max-w-7xl px-8">
+                                              <div className="grid grid-cols-3 gap-x-8 gap-y-10 py-16">
+                                                <div
+                                                  key={category.page.name}
+                                                  className="group relative"
+                                                >
+                                                  <img
+                                                    alt={category.page.imageAlt}
+                                                    src={category.page.imageSrc}
+                                                    className="aspect-square w-full rounded-md bg-gray-100 object-cover group-hover:opacity-75"
+                                                  />
+                                                  <a
+                                                    href={category.page.href}
+                                                    className="mt-4 block font-medium text-gray-900"
+                                                  >
+                                                    <span
+                                                      aria-hidden="true"
+                                                      className="absolute inset-0 z-10"
+                                                    />
+                                                    {category.page.name}
+                                                  </a>
+                                                  <p
+                                                    aria-hidden="true"
+                                                    className="mt-1"
+                                                  >
+                                                    Shop now
+                                                  </p>
+                                                </div>
+
+                                                {category.collections
+                                                  .slice(0, 2)
+                                                  .map((item) => (
+                                                    <div
+                                                      key={item.name}
+                                                      className="group relative"
+                                                    >
+                                                      <img
+                                                        alt={item.imageAlt}
+                                                        src={item.imageSrc}
+                                                        className="aspect-square w-full rounded-md bg-gray-100 object-cover group-hover:opacity-75"
+                                                      />
+                                                      <a
+                                                        href={item.href}
+                                                        className="mt-4 block font-medium text-gray-900"
+                                                      >
+                                                        <span
+                                                          aria-hidden="true"
+                                                          className="absolute inset-0 z-10"
+                                                        />
+                                                        {item.name}
+                                                      </a>
+                                                      <p
+                                                        aria-hidden="true"
+                                                        className="mt-1"
+                                                      >
+                                                        Shop now
+                                                      </p>
+                                                    </div>
+                                                  ))}
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </PopoverPanel>
+                                      </>
+                                    );
+                                  }}
+                                </Popover>
+                              );
+                          })}
+                          {navigation.categories.map((category) => {
+                            if (!category.collections)
+                              return (
+                                <a
+                                  key={category.name}
+                                  href={category.page.href}
+                                  className="flex items-center text-sm font-medium"
+                                >
+                                  {category.name}
+                                </a>
+                              );
+                          })}
                           {navigation.pages.map((page) => (
                             <a
                               key={page.name}
